@@ -13,13 +13,11 @@ pipeline {
         stage('Build') {
             steps {
                 sh './gradlew clean build'
+                emailext body: 'Test Message',
+                         subject: 'Test Subject',
+                         to: '6666350@gmail.com'
             }
         }
-        stage('Send email') {
-                emailext body: 'Test Message',
-                    subject: 'Test Subject',
-                    to: '6666350@gmail.com'
-            }
     }
 
 
