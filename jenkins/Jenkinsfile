@@ -12,9 +12,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building in ...'
-                echo pwd()
                 sh './gradlew clean build'
+                emailext
+                              to: "6666350@gmail.com",
+                            from: "Jenkins",
+                         subject: "[jenkins] ${packageFullName}: ",
+                            body: "Jenkins Build: \'${env.BUILD_URL}\'\n"
             }
         }
     }
