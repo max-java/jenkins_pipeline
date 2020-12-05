@@ -1,28 +1,13 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-import org.ajoberstar.gradle.git.release.opinion.Strategies //use ajoberstar.grgit
-
 plugins {
 	id 'org.springframework.boot' version '2.4.0'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
 
-	//palantir
-	id 'com.palantir.git-version' version '0.12.3'
-
-	//another way of versioning plugin
 	id 'org.ajoberstar.grgit' version '4.1.0'
-	id 'org.ajoberstar.release-opinion' version '1.7.2'
 
-	//https://github.com/n0mer/gradle-git-properties
-	//n0mer plugin
-	id "com.gorylenko.gradle-git-properties" version "2.2.4"
 }
 
-apply plugin: "com.palantir.git-version"
-apply plugin: "com.gorylenko.gradle-git-properties"
-
-group = 'by.jrr.versioning'
-//version = gitVersion()  //that is palantir way of getting version
+group = 'by.jrr.jenkinspipe'
 version = grgit.describe(tags: true)
 sourceCompatibility = '11'
 
@@ -35,7 +20,6 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-actuator")
-	// https://mvnrepository.com/artifact/javax.validation/validation-api
 	compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 }
 
@@ -44,52 +28,6 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
-
-//palantir
-task showVersion {
-	doLast {
-		println "\nCurrent version: ${gitVersion()}\n"
-
-		def details = versionDetails()
-		println "last tag          : ${details.lastTag}"
-		println "commit distance   : ${details.commitDistance}"
-		println "hash              : ${details.gitHash}"
-		println "branch name       : ${details.branchName}"
-		println "is clean tag      : ${details.isCleanTag}"
-	}
-}
-
-
-processResources {
-	filter(ReplaceTokens, tokens:[appVersion: gitVersion()])  //this could change variables in application.properties
-}
-
-// versioning with org.ajoberstar.release-opinion (version should be commented)
-release {
-	versionStrategy Strategies.FINAL
-	defaultVersionStrategy Strategies.SNAPSHOT
-	tagStrategy {
-		generateMessage = { version -> "Version $project.version" }
-	}
-}
-
-//n0mer
-gitProperties { //save props into map
-	println "set map prefix to store props"
-	extProperty = 'gitProps' // git properties will be put in a map at project.ext.gitProps
-}
-
-//n0mer
-//get props from saved map
-task printGitProperties(dependsOn: 'generateGitProperties') { // make sure generateGitProperties task to execute before accessing generated properties
-	doLast {
-		println "git.closest.tag.name=" + project.ext.gitProps['git.closest.tag.name']
-		println "git.closest.tag.commit.count=" + project.ext.gitProps['git.closest.tag.commit.count']
-	}
-}
-
-// make sure the generateGitProperties task always executes (even when git.properties is not changed)
-generateGitProperties.outputs.upToDateWhen { false }
 
 springBoot {
 	buildInfo() {
@@ -119,5 +57,4 @@ ext.getLatestTag = { ->
 
 task getGitLog {
 	print grgit.describe(tags: true)
-
 }
