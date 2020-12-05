@@ -16,9 +16,14 @@ pipeline {
                 emailext
                               to: '6666350@gmail.com',
                             from: 'Jenkins',
-                         subject: ''[jenkins] ${packageFullName}: '',
+                         subject: '[jenkins] ${packageFullName}: ',
                             body: 'Jenkins Build: \"${env.BUILD_URL}\"\n'
             }
         }
     }
+    post{
+            always{
+                sendNotifications currentBuild.result
+            }
+        }
 }
