@@ -19,13 +19,13 @@ pipeline {
 
     post {
         failure {
-            emailext body: 'Test Message',
-                     subject: 'Test Subject',
+            emailext body: 'Build Failed!',
+                     subject: 'Build Failed!',
                      to: '6666350@gmail.com'
         }
         unstable {
-            emailext body: 'Test Message',
-                     subject: 'Test Subject',
+            emailext body: 'Build unstable!',
+                     subject: 'Build unstable!',
                      to: '6666350@gmail.com'
         }
     }
