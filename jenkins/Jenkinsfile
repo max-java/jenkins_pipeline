@@ -14,10 +14,10 @@ pipeline {
             steps {
                 sh './gradlew clean build'
                 emailext
-                              to: "6666350@gmail.com",
-                            from: "Jenkins",
-                         subject: "[jenkins] ${packageFullName}: ",
-                            body: "Jenkins Build: \'${env.BUILD_URL}\'\n"
+                              to: '6666350@gmail.com',
+                            from: 'Jenkins',
+                         subject: ''[jenkins] ${packageFullName}: '',
+                            body: 'Jenkins Build: \"${env.BUILD_URL}\"\n'
             }
         }
     }
